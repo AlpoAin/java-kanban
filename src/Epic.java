@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     // Хранит идентификаторы подзадач, принадлежащих данному эпику
@@ -20,6 +21,22 @@ public class Epic extends Task {
 
     public void removeSubtaskId(int id) {
         subtaskIds.remove(Integer.valueOf(id));
+    }
+
+    // Переопределяем equals() и hashCode() с учётом всех полей
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+        // если базовые поля не совпадают — сразу false
+
+        if (this.getClass() != obj.getClass()) return false;
+        Epic other = (Epic) obj;
+        return Objects.equals(subtaskIds, other.subtaskIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtaskIds);
     }
 
     // Переопределяем toString() для более наглядного отображения эпика

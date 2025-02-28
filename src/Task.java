@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Task {
     protected int id;
     protected String name;
@@ -33,18 +35,23 @@ public class Task {
         this.status = status;
     }
 
-    // Переопределяем equals() и hashCode() на основе id
+    // Переопределяем equals() по всем полям
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
+
         Task other = (Task) obj;
-        return id == other.id;
+        return id == other.id
+                && Objects.equals(name, other.name)
+                && Objects.equals(description, other.description)
+                && status == other.status;
     }
 
+    // Переопределяем hashCode() по всем полям
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Objects.hash(id, name, description, status);
     }
 
     // Переопределяем toString() для более красивого вывода
