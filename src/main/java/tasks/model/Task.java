@@ -1,4 +1,4 @@
-package tasks;
+package tasks.model;
 
 public class Task {
     protected int id;
@@ -23,7 +23,7 @@ public class Task {
         return id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -61,6 +61,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "tasks.Task{id=" + id + ", name='" + name + "', status=" + status + "}";
+        return "Task{id=" + id + ", name='" + name + "', status=" + status + "}";
     }
 }
