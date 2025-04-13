@@ -11,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks = new HashMap<>();
     private Map<Integer, Epic> epics = new HashMap<>();
     private Map<Integer, Subtask> subtasks = new HashMap<>();
-    private LinkedList<Task> history = new LinkedList<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void addTask(Task task) {
@@ -61,7 +61,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTask(int id) {
         Task task = tasks.get(id);
         if(task != null) {
-            recordHistory(task);
+            historyManager.add(task);
             return new Task(task.getId(), task.getName(), task.getDescription(), task.getStatus());
         }
         return null;
@@ -71,7 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpic(int id) {
         Epic epic = epics.get(id);
         if(epic != null) {
-            recordHistory(epic);
+            historyManager.add(epic);
             return new Epic(epic.getId(), epic.getName(), epic.getDescription(), epic.getStatus(), epic.getSubtaskIds());
         }
         return null;
@@ -81,7 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         if(subtask != null) {
-            recordHistory(subtask);
+            historyManager.add(subtask);
             return new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getEpicId());
         }
         return null;
@@ -89,8 +89,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
+        List<Task> items = historyManager.getHistory();
         List<Task> historyView = new ArrayList<>();
-        for(Task item : history) {
+        for(Task item : items) {
             if(item instanceof Epic) {
                 Epic e = (Epic) item;
                 historyView.add(new Epic(e.getId(), e.getName(), e.getDescription(), e.getStatus(), e.getSubtaskIds()));
@@ -102,12 +103,5 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return historyView;
-    }
-
-    private void recordHistory(Task task) {
-        history.add(task);
-        if(history.size() > 10) {
-            history.removeFirst();
-        }
     }
 }
